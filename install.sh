@@ -93,25 +93,31 @@ detect_conflicts() {
     local exclude_args
     read -ra exclude_args <<< "$(build_exclude_args)"
 
-    echo "Checking for conflicting files..."
+    echo "Checking for conflicting files..." >&2
 
-    local conflicts
-    conflicts=$(rsync -avn --ignore-existing "${exclude_args[@]}" \
-                      "$TEMPLATE_DIR/" "$target_dir/" 2>/dev/null | \
-                grep -E '^>f' | \
-                sed 's/>f[+.]* //' || true)
+    local conflicts=""
 
-    local existing_conflicts
-    existing_conflicts=$(rsync -avn --itemize-changes "${exclude_args[@]}" \
-                              "$TEMPLATE_DIR/" "$target_dir/" 2>/dev/null | \
-                         grep -E '^\.f' | \
-                         grep -v '\.f\.\.\.\.\.\.\.\.\.T' | \
-                         sed 's/\.f[+.]* //' || true)
+    while IFS= read -r template_file; do
+        [ -z "$template_file" ] && continue
 
-    local all_conflicts
-    all_conflicts=$(printf "%s\n%s" "$conflicts" "$existing_conflicts" | sort -u | grep -v '^$' || true)
+        local relative_path="${template_file#$TEMPLATE_DIR/}"
 
-    echo "$all_conflicts"
+        local skip=false
+        for exclude in "${EXCLUDE_FILES[@]}"; do
+            if [[ "$relative_path" == "$exclude"* ]]; then
+                skip=true
+                break
+            fi
+        done
+
+        [ "$skip" = true ] && continue
+
+        if [ -f "$target_dir/$relative_path" ]; then
+            conflicts="$conflicts$relative_path"$'\n'
+        fi
+    done < <(find "$TEMPLATE_DIR" -type f)
+
+    echo -n "$conflicts" | grep -v '^$' || true
 }
 
 copy_files() {
