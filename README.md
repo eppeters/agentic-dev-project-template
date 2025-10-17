@@ -300,6 +300,30 @@ Here's how a typical feature implementation works with these templates:
 - For true emergencies, document that you'll add tests afterward
 - Use git commit `--no-verify` if you have pre-commit hooks, but sparingly
 
+## Development
+
+### Running Tests
+
+This repository includes a comprehensive test suite for the `install.sh` script using the Bats testing framework.
+
+**Run all tests:**
+```bash
+./test/run-tests.sh
+```
+
+**Run specific tests:**
+```bash
+./test/bats/bin/bats test/install.bats --filter "pattern"
+```
+
+**Test coverage includes:**
+- Happy path: fresh installs, directory creation, file copying
+- Conflict detection: handling existing files, preserving user data
+- Edge cases: relative paths, multiple arguments, excluded files
+- Mock integration: simulates Claude Code invocation for conflict resolution
+
+The tests use a mock `claude` command to avoid requiring an actual Claude Code installation for testing.
+
 ## Contributing Back
 
 If you develop useful enhancements to these templates:
