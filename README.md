@@ -1,16 +1,16 @@
-# TDD Workflow Templates for Claude Code
+# Claude Code Base Project Template
 
-This directory contains reusable templates for implementing a strict Test-Driven Development (TDD) workflow with specification-driven development for any software project using Claude Code.
+This repository contains the base template files that should be included in every Claude Code project. It provides reusable configuration files, development workflows, and Claude Code customizations that establish best practices across all projects.
 
 ## Overview
 
-These templates establish a rigorous development methodology that:
+This template repository provides:
 
-- **Tests First, Always**: Enforces writing comprehensive tests before any implementation code
-- **Specification-Driven**: Links all development to clear user stories and acceptance criteria
-- **Layered Architecture**: Promotes clean separation of concerns with clear architectural boundaries
-- **Continuous Verification**: Requires immediate commits and test validation at each step
-- **Quality Enforcement**: Uses sub-agents to ensure code quality and standards compliance
+- **Claude Code Configuration**: Persona definitions, custom agents, and slash commands
+- **Development Workflow Templates**: TDD methodology, commit strategies, and architecture patterns
+- **Project Documentation Templates**: CLAUDE.md and DEVELOPMENT.md for project-specific customization
+- **Quality Standards**: Communication style specifications and code quality guidelines
+- **Easy Installation**: Simple script to copy templates into any new or existing project
 
 ## What's Included
 
@@ -74,33 +74,46 @@ These templates establish a rigorous development methodology that:
    - Framework-specific implementation examples
    - **Delete this file if your project is not a REST API**
 
-## How to Use These Templates
+## Installation
 
-### Option 1: Automated Setup (Recommended)
+### Quick Start (Recommended)
 
-1. **Copy the template directory** to your project root:
+1. **Clone this repository** (if you haven't already):
    ```bash
-   cp -r tdd-workflow-templates/* /path/to/your/project/
+   git clone https://github.com/yourusername/claude-code-base-project-template.git
+   cd claude-code-base-project-template
    ```
 
-2. **Run the setup command** in Claude Code:
+2. **Run the installation script** pointing to your target project:
+   ```bash
+   ./install.sh /path/to/your/project
+   ```
+
+   Or run interactively (will prompt for target directory):
+   ```bash
+   ./install.sh
+   ```
+
+3. **Handle any conflicts**: If files already exist in your project, the script will:
+   - Copy all non-conflicting files automatically
+   - Show you a summary of conflicting files
+   - Launch Claude Code to help you resolve conflicts interactively
+
+4. **Customize your project** using Claude Code:
    ```
    /setup
    ```
+   This will interview you about your project and fill in all template placeholders.
 
-3. **Answer the questions** about your project (name, type, tech stack, architecture, etc.)
+### Manual Installation
 
-4. **Confirm the summary** and let Claude automatically fill in all placeholders
+If you prefer manual control:
 
-That's it! Claude will customize all templates with your project information and remove files you don't need.
-
-### Option 2: Manual Setup
-
-If you prefer to customize manually:
-
-1. **Copy the template directory** to your project root:
+1. **Copy files manually** to your project root:
    ```bash
-   cp -r tdd-workflow-templates/* /path/to/your/project/
+   rsync -av --exclude='README.md' --exclude='.git/' --exclude='install.sh' \
+         --exclude='.claude/settings.local.json' \
+         /path/to/claude-code-base-project-template/ /path/to/your/project/
    ```
 
 2. **Customize `CLAUDE.md`**:
@@ -294,10 +307,16 @@ If you develop useful enhancements to these templates:
 - Document project-specific agents you create
 - Share domain-specific patterns and guidelines
 
+## Contributing
+
+This is a personal template repository, but suggestions and improvements are welcome. Feel free to fork and adapt for your own needs.
+
 ## License
 
 These templates are provided as-is for use in any project. Customize them freely to match your needs.
 
 ## Credits
 
-These templates were derived from the bodydouble project's TDD and specification-driven workflow, generalized for reuse across any software project.
+**Created by Eddie Peters** (eddie@dinogalactic.com)
+
+These templates were derived from patterns developed across multiple projects, with particular influence from the bodydouble project's TDD and specification-driven workflow.
