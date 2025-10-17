@@ -324,6 +324,36 @@ This repository includes a comprehensive test suite for the `install.sh` script 
 
 The tests use a mock `claude` command to avoid requiring an actual Claude Code installation for testing.
 
+### Continuous Integration
+
+Tests run automatically on every push to GitHub via GitHub Actions. See `.github/workflows/test.yml` for the CI configuration.
+
+### Updating the Test Framework
+
+The repository vendors Bats-core 1.12.0 in `test/bats/`. To update to a newer version:
+
+```bash
+# Remove old version
+rm -rf test/bats
+
+# Clone new version
+cd /tmp
+git clone --depth 1 https://github.com/bats-core/bats-core.git
+
+# Copy to project, excluding unnecessary files
+cp -r bats-core claude-code-base-project-template/test/bats
+cd claude-code-base-project-template/test/bats
+rm -rf .git test test2 docs .github
+
+# Verify it works
+cd ../..
+./test/run-tests.sh
+
+# Commit
+git add test/bats
+git commit -m "Update Bats testing framework to version X.Y.Z"
+```
+
 ## Contributing Back
 
 If you develop useful enhancements to these templates:
