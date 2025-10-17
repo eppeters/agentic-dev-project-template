@@ -7,7 +7,11 @@ TEMPLATE_DIR="$SCRIPT_DIR"
 EXCLUDE_FILES=(
     "README.md"
     ".git/"
+    ".github/"
     "install.sh"
+    "test/"
+    "LICENSE"
+    "GITHUB_DESCRIPTION.md"
     ".claude/settings.local.json"
 )
 

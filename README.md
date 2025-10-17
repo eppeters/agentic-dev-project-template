@@ -1,5 +1,10 @@
 # Claude Code Base Project Template
 
+[![Tests](https://github.com/eppeters/claude-code-base-project-template/workflows/Test%20install.sh/badge.svg)](https://github.com/eppeters/claude-code-base-project-template/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+Production-ready templates for Claude Code projects with TDD workflows, clean architecture patterns, and automated testing.
+
 This repository contains the base template files that should be included in every Claude Code project. It provides reusable configuration files, development workflows, and Claude Code customizations that establish best practices across all projects.
 
 ## Overview
@@ -80,7 +85,7 @@ This template repository provides:
 
 1. **Clone this repository** (if you haven't already):
    ```bash
-   git clone https://github.com/yourusername/claude-code-base-project-template.git
+   git clone https://github.com/eppeters/claude-code-base-project-template.git
    cd claude-code-base-project-template
    ```
 
@@ -111,8 +116,9 @@ If you prefer manual control:
 
 1. **Copy files manually** to your project root:
    ```bash
-   rsync -av --exclude='README.md' --exclude='.git/' --exclude='install.sh' \
-         --exclude='.claude/settings.local.json' \
+   rsync -av --exclude='README.md' --exclude='.git/' --exclude='.github/' \
+         --exclude='install.sh' --exclude='test/' --exclude='LICENSE' \
+         --exclude='GITHUB_DESCRIPTION.md' --exclude='.claude/settings.local.json' \
          /path/to/claude-code-base-project-template/ /path/to/your/project/
    ```
 
@@ -373,4 +379,4 @@ These templates are provided as-is for use in any project. Customize them freely
 
 **Created by Eddie Peters** (eddie@dinogalactic.com)
 
-These templates were derived from patterns developed across multiple projects, with particular influence from the bodydouble project's TDD and specification-driven workflow.
+These templates were derived from production codebases and best practices, refined through real-world application of TDD and specification-driven workflows.
