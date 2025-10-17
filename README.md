@@ -5,6 +5,8 @@
 
 Claude Code Base Project Template provides reusable configuration files, development workflows, and documentation templates for Claude Code projects.
 
+**Note**: These templates are designed for Claude Code CLI and have not been tested with other AI coding assistants.
+
 ## Features
 
 - **Claude Code Configuration**: Persona definitions, custom agents, and slash commands
