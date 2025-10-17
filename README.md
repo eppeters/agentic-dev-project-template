@@ -3,19 +3,148 @@
 [![Tests](https://github.com/eppeters/claude-code-base-project-template/workflows/Test%20install.sh/badge.svg)](https://github.com/eppeters/claude-code-base-project-template/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Production-ready templates for Claude Code projects with TDD workflows, clean architecture patterns, and automated testing.
+Claude Code Base Project Template provides reusable configuration files, development workflows, and documentation templates for Claude Code projects.
 
-This repository contains the base template files that should be included in every Claude Code project. It provides reusable configuration files, development workflows, and Claude Code customizations that establish best practices across all projects.
-
-## Overview
-
-This template repository provides:
+## Features
 
 - **Claude Code Configuration**: Persona definitions, custom agents, and slash commands
-- **Development Workflow Templates**: TDD methodology, commit strategies, and architecture patterns
-- **Project Documentation Templates**: CLAUDE.md and DEVELOPMENT.md for project-specific customization
-- **Quality Standards**: Communication style specifications and code quality guidelines
-- **Easy Installation**: Simple script to copy templates into any new or existing project
+- **TDD Methodology**: Test-driven development workflows with testing patterns
+- **Clean Architecture**: Layered architecture templates with separation of concerns
+- **Project Documentation**: CLAUDE.md and DEVELOPMENT.md templates
+- **Installation**: Script with conflict resolution
+- **Testing**: Test suite with GitHub Actions integration
+- **Documentation**: Guides for different project types and languages
+
+## Installation
+
+```bash
+git clone https://github.com/eppeters/claude-code-base-project-template.git
+cd claude-code-base-project-template
+./install.sh /path/to/your/project
+```
+
+After installation, customize templates for your project:
+```
+/setup
+```
+
+## Usage Workflow
+
+### Starting a New Project
+
+1. **Install templates**:
+   ```bash
+   ./install.sh ~/projects/my-new-app
+   cd ~/projects/my-new-app
+   ```
+
+2. **Run setup** in Claude Code:
+   ```
+   /setup
+   ```
+
+   The setup agent will ask about:
+   - Project name and type
+   - Technology stack (language, framework, database)
+   - Architecture pattern
+   - Testing framework
+   - Files to remove (e.g., REST API files for non-API projects)
+
+3. **Verify templates**:
+   - Check `CLAUDE.md` for project-specific values
+   - Review `DEVELOPMENT.md` for setup commands
+   - Remove `.claude/HTTP_STATUS_CODES.md` and `.claude/agents/http-status-reviewer.md` if not building a REST API
+
+### Implementing a Feature
+
+Use the `/feature` command to implement new functionality with TDD:
+
+```
+/feature
+```
+
+The agent will guide you through:
+
+1. **User story creation**:
+   - Who is the user?
+   - What do they want?
+   - Why do they want it?
+
+2. **Acceptance criteria**:
+   - Agent proposes GIVEN/WHEN/THEN scenarios
+   - You review and approve
+
+3. **Test creation**:
+   - Agent writes tests covering all acceptance criteria
+   - Tests fail with ImportError or NotImplementedError
+   - You confirm tests before implementation
+
+4. **Implementation**:
+   - Agent implements one layer at a time
+   - Uses stubs for unimplemented dependencies
+   - Runs tests after each layer
+   - Commits when tests pass
+
+Example session:
+```
+You: /feature
+
+Agent: Let's implement a new feature using TDD.
+
+Who is the user for this feature?
+
+You: API consumers
+
+Agent: What does the API consumer want to accomplish?
+
+You: List all active users with pagination
+
+Agent: Why do they want this?
+
+You: To display users in a dashboard UI
+
+Agent: Here are the acceptance criteria:
+
+GIVEN an API consumer
+WHEN they request GET /api/users?status=active&page=1&limit=10
+THEN they receive:
+- 200 OK status
+- JSON array of active users
+- Pagination metadata (total, page, limit)
+- Users sorted by creation date descending
+
+[Tests are written, implementation proceeds layer by layer]
+```
+
+### Example Project Timeline
+
+**Day 1: Setup**
+```
+./install.sh ~/projects/task-api
+cd ~/projects/task-api
+claude
+> /setup
+```
+
+**Day 2: First Feature**
+```
+> /feature
+[Implement user authentication]
+```
+
+**Day 3: Second Feature**
+```
+> /feature
+[Implement task creation]
+```
+
+**Day 4: Third Feature**
+```
+> /feature
+[Implement task listing with filters]
+```
+
+Each feature follows TDD: tests first, implementation second, commit when passing.
 
 ## What's Included
 
@@ -79,9 +208,9 @@ This template repository provides:
    - Framework-specific implementation examples
    - **Delete this file if your project is not a REST API**
 
-## Installation
+## Detailed Installation
 
-### Quick Start (Recommended)
+### Quick Start
 
 1. **Clone this repository** (if you haven't already):
    ```bash
