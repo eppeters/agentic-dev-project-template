@@ -2,16 +2,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEMPLATE_DIR="$SCRIPT_DIR"
+TEMPLATE_DIR="$SCRIPT_DIR/templates"
 
+# Only exclude settings.local.json from the templates directory
 EXCLUDE_FILES=(
-    "README.md"
-    ".git/"
-    ".github/"
-    "install.sh"
-    "test/"
-    "LICENSE"
-    "GITHUB_DESCRIPTION.md"
     ".claude/settings.local.json"
 )
 

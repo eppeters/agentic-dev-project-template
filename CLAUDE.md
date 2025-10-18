@@ -1,216 +1,219 @@
-# Claude Code Instructions - [PROJECT NAME]
+# Claude Code Instructions - Template Repository
 
 ## Project Context & Purpose
 
-[Describe your project's purpose and key business context here]
+This repository provides reusable configuration files, development workflows, and documentation templates for Claude Code projects. It is a **template repository** - the files in `templates/` are meant to be copied to target projects and customized.
 
 **Key Business Context:**
-- **Target Users**: [Who are your users?]
-- **Core Problem**: [What problem does this solve?]
-- **Primary Benefits**: [What value does this provide?]
+- **Target Users**: Developers using Claude Code to build software projects
+- **Core Problem**: Lack of standardized TDD workflows and project documentation for Claude Code
+- **Primary Benefits**: Enforces strict Test-Driven Development, provides clean architecture patterns, ensures consistent code quality
 
-## Architecture Overview
+## Repository Structure
 
-**Architecture Pattern:**
 ```
-[Describe your architecture pattern here, e.g.:
-API Layer (FastAPI routes)
-    ↓
-Service Layer (Business logic)
-    ↓
-Repository Layer (Data access)
-    ↓
-Model Layer (Database ORM)
-]
+agentic-dev-project-template/
+├── templates/                     # Template files copied to target projects
+│   ├── CLAUDE.md                 # Template project instructions (with placeholders)
+│   ├── DEVELOPMENT.md            # Template development guide (with placeholders)
+│   └── .claude/                  # Template Claude Code configuration
+│       ├── PERSONA.md
+│       ├── HTTP_STATUS_CODES.md
+│       ├── agents/
+│       │   ├── user-story-implementer.md
+│       │   ├── http-status-reviewer.md
+│       │   └── project-setup.md
+│       └── commands/
+│           ├── feature.md
+│           ├── setup.md
+│           ├── commit.md
+│           └── tests.md
+├── CLAUDE.md                      # THIS FILE - Instructions for working on template repo
+├── DEVELOPMENT.md                 # Development guide for template repo
+├── README.md                      # Public documentation
+├── install.sh                     # Installation script
+├── test/                          # Test suite for install.sh
+└── .claude/                       # Claude Code config for template repo development
+    ├── PERSONA.md
+    └── commands/
 ```
-
-**Technology Stack:**
-- **Framework**: [e.g., FastAPI, Django, Express]
-- **Database**: [e.g., PostgreSQL, SQLite, MongoDB]
-- **Testing**: [e.g., pytest, Jest, JUnit]
-- **Package Manager**: [e.g., uv, npm, pip]
-- **Language/Version**: [e.g., Python 3.13, Node 18]
 
 ## Critical Development Rules
 
-### 1. Test-Driven Development (MANDATORY)
-**ALWAYS follow TDD when adding features:**
-1. Write tests first before any implementation code
-2. Use mocking libraries to mock layers not yet implemented
-3. Ensure tests fail correctly (ImportError or NotImplementedError)
-4. Implement in layers following your architecture pattern
-5. Implement ONE layer at a time
-6. Run tests after each change until they pass
+### 1. Template vs Repository Files
 
-### 2. Commit Strategy (REQUIRED)
-**MUST commit after completing each logical step:**
-- Use descriptive commit messages with format:
+**IMPORTANT**: This repository has TWO sets of files:
+
+1. **Template files** (`templates/` directory):
+   - These are copied to target projects by `install.sh`
+   - Contain placeholders like `[PROJECT NAME]` and `[FRAMEWORK]`
+   - Should be generic and applicable to many project types
+   - When editing these, think: "Will this help developers using the templates?"
+
+2. **Repository files** (root level):
+   - `CLAUDE.md`, `DEVELOPMENT.md`, `.claude/` at root level
+   - These guide development of the template repository itself
+   - When editing these, think: "Will this help contributors to this repo?"
+
+### 2. Testing Changes
+
+**ALWAYS test install.sh after making changes to:**
+- The `templates/` directory structure
+- The `install.sh` script itself
+- The test suite
+
+Run tests:
+```bash
+./test/run-tests.sh
+```
+
+### 3. Commit Strategy
+
+Use descriptive commit messages:
 ```
 Title describing the change
 
-Following: [Original user request or context]
-
 - Bullet points of specific changes made
 - Include technical details
-- Reference any specs or requirements
+- Reference any issues or requirements
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-### 3. Code Quality Standards
-- **Type Safety**: Use type hints/annotations throughout
-- **Error Handling**: Use appropriate exceptions with proper error codes
-- **Validation**: Use validation libraries for all input/output
-- **Documentation**: Code should be self-documenting with clear naming
+## Common Development Tasks
+
+### Adding a New Template File
+
+1. Create the file in `templates/` directory
+2. Use placeholders for project-specific values: `[PROJECT NAME]`, `[FRAMEWORK]`, etc.
+3. Update the project-setup agent if it should fill in these placeholders
+4. Test that install.sh copies the file correctly
+5. Update documentation to mention the new file
+
+### Adding a New Slash Command Template
+
+1. Create the command file in `templates/.claude/commands/`
+2. Use the frontmatter format with `description` and `allowed-tools`
+3. Make the command generic enough for different project types
+4. Document it in the template README
+5. Test with install.sh
+
+### Adding a New Agent Template
+
+1. Create the agent file in `templates/.claude/agents/`
+2. Use the frontmatter format with `name`, `description`, and `tools`
+3. Make the agent follow TDD principles
+4. Document it in the template README
+5. Test with install.sh
+
+### Updating Documentation
+
+1. **Template documentation** (`templates/CLAUDE.md`, `templates/DEVELOPMENT.md`):
+   - Keep placeholders for customization
+   - Make examples generic
+   - Think about different project types
+
+2. **Repository documentation** (root `README.md`):
+   - Explain how to use the templates
+   - Keep it concise
+   - Move detailed guides to `docs/` folder
+
+### Testing install.sh
+
+```bash
+# Run full test suite
+./test/run-tests.sh
+
+# Test installation manually
+./install.sh /tmp/test-project
+cd /tmp/test-project
+ls -la
+cat CLAUDE.md  # Should have placeholders
+```
+
+## Architecture Overview
+
+**Installation Flow:**
+```
+1. User runs: ./install.sh /path/to/project
+2. Script copies templates/ directory to target
+3. Script detects conflicts with existing files
+4. Script invokes Claude Code to help resolve conflicts
+5. User runs /setup to customize placeholders
+```
+
+**Template Customization Flow:**
+```
+1. User invokes /setup command
+2. project-setup agent asks questions
+3. Agent fills in all placeholders in CLAUDE.md and DEVELOPMENT.md
+4. Agent removes irrelevant files (e.g., HTTP_STATUS_CODES.md for non-API projects)
+5. User begins development with /feature command
+```
+
+## Technology Stack
+
+- **Shell**: Bash (for install.sh)
+- **Testing**: Bats (Bash Automated Testing System)
+- **File Operations**: rsync
+- **CI/CD**: GitHub Actions
 
 ## Project Structure Navigation
 
 ### Key Files to Understand First:
-[List the 5-10 most important files developers should read first]
-1. **`path/to/main.py`** - Entry point
-2. **`path/to/config.py`** - Configuration
-3. **`path/to/models/`** - Data models
-4. **`path/to/api/`** - API endpoints
-5. **`tests/conftest.py`** - Test configuration
 
-### Core Data Models:
-[Describe your primary data models and their relationships]
-- **Model1**: [Description]
-- **Model2**: [Description]
-- **Model3**: [Description]
+1. **`README.md`** - Public documentation explaining templates
+2. **`install.sh`** - Installation script that copies templates/
+3. **`templates/CLAUDE.md`** - Template project instructions
+4. **`templates/.claude/agents/user-story-implementer.md`** - Core TDD agent
+5. **`test/install.bats`** - Test suite for install.sh
 
-### Common Enums/Constants:
-[List important enums or constants used throughout the project]
-```
-STATUS_ENUM = ["pending", "active", "complete", "cancelled"]
-```
+### Template Files Overview:
 
-## Common Development Patterns
+**Core Templates:**
+- `templates/CLAUDE.md` - Project-specific instructions for Claude Code
+- `templates/DEVELOPMENT.md` - Development workflow guide
 
-### Adding a New API Endpoint:
-1. **Schema**: Define validation models
-2. **Repository**: Add data access methods
-3. **Service**: Add business logic
-4. **API**: Add route handler
-5. **Tests**: Create test cases
+**Agents:**
+- `user-story-implementer.md` - Implements features with TDD
+- `project-setup.md` - Customizes templates for new projects
+- `http-status-reviewer.md` - Reviews HTTP status codes (REST APIs only)
 
-### Working with the Database:
-[Provide common patterns for database operations in your project]
-
-### Repository Pattern:
-[Provide example of repository pattern if used]
-
-### Service Pattern:
-[Provide example of service pattern if used]
-
-## Testing Approach
-
-### Test Structure:
-- **`tests/conftest.py`**: Test configuration and fixtures
-- **`tests/test_*.py`**: Test files following naming convention
-
-### Running Tests:
-```bash
-[command to run all tests]
-[command to run specific tests]
-[command to run with coverage]
-```
-
-### Test Fixtures Available:
-[List available test fixtures and their purpose]
-
-## Development Workflow
-
-### Starting Development:
-```bash
-# Setup environment
-[setup commands]
-
-# Start development server
-[start command]
-
-# Access points:
-# - API: [URL]
-# - Docs: [URL if applicable]
-```
-
-### Making Database Changes:
-```bash
-# Create migration
-[migration create command]
-
-# Apply migrations
-[migration apply command]
-```
-
-## API Design Patterns
-
-[If building an API, describe your endpoint naming conventions]
-
-### Endpoint Naming:
-- `GET /api/v1/resources/` - List resources
-- `POST /api/v1/resources/` - Create resource
-- `GET /api/v1/resources/{id}` - Get specific resource
-- `PUT /api/v1/resources/{id}` - Update resource
-- `DELETE /api/v1/resources/{id}` - Delete resource
-
-## Key Business Logic
-
-[Describe important business rules, workflows, or domain logic]
-
-### Important Workflows:
-1. [Workflow 1 description]
-2. [Workflow 2 description]
-
-### Relationships:
-[Describe key relationships between entities]
-
-## Troubleshooting Guide
-
-### Common Issues:
-1. **Import Errors**: [How to resolve]
-2. **Database Errors**: [How to resolve]
-3. **Test Failures**: [How to resolve]
-4. **Build/Runtime Errors**: [How to resolve]
-
-### Debugging Tools:
-[List debugging approaches and tools]
-
-## Future Considerations
-
-### Planned Features:
-[List upcoming features or technical debt to address]
-
-### Scalability Notes:
-[Describe scalability considerations or migration paths]
-
-## Working with Specifications
-
-**Primary Spec**: [Link to main specification document]
-**Implementation Plan**: [Link to implementation plan if exists]
-
-When adding features:
-1. Reference user stories or requirements documentation
-2. Implement data model requirements from specs
-3. Follow API behavior requirements from specs
-4. Include business logic per specifications
+**Commands:**
+- `/feature` - Invoke user-story-implementer to build a feature
+- `/setup` - Invoke project-setup to customize templates
+- `/commit` - Remind to commit changes
+- `/tests` - Remind to write tests first (TDD)
 
 ## Success Criteria
 
-When development is complete, the system should:
-- ✅ [Criterion 1]
-- ✅ [Criterion 2]
-- ✅ [Criterion 3]
-- ✅ Have comprehensive test coverage
-- ✅ Follow clean architecture patterns
-- ✅ Include proper error handling and validation
+When contributing to this repository:
+- ✅ Templates work for multiple project types (APIs, CLIs, libraries, etc.)
+- ✅ install.sh successfully copies files and handles conflicts
+- ✅ All tests pass (`./test/run-tests.sh`)
+- ✅ Documentation is clear and accurate
+- ✅ Changes are committed with descriptive messages
+- ✅ Templates enforce TDD methodology strictly
 
-Remember: [Add your project's core values or principles here]
+## Working with This Repository
 
-- Always use [package manager] to modify dependencies. Do not edit the dependency file directly.
-- Do not update non-test code before writing or updating tests. You MUST follow the test-driven development workflow in @DEVELOPMENT.md.
-- You MUST follow @DEVELOPMENT.md for all development.
-- You MUST NEVER add comments to code explaining what the code does.
-- [Add any other project-specific rules]
+**Adding Features:**
+- Modify template files in `templates/`
+- Test with install.sh
+- Update documentation
+- Run test suite
+
+**Fixing Bugs:**
+- Identify if bug is in templates or install script
+- Write test case if applicable
+- Fix and verify
+- Commit with clear message
+
+**Updating Documentation:**
+- Keep README.md concise
+- Move detailed guides to `docs/` if needed
+- Ensure template docs have placeholders
+
+Remember: This repository provides **templates** - prioritize flexibility and clarity over project-specific optimizations.

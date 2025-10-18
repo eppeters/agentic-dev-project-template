@@ -1,336 +1,253 @@
-# Development Guide - [PROJECT NAME]
+# Development Guide - Template Repository
 
 ## Project Overview
 
-[Brief description of what this project does and its role in the larger system]
+This repository maintains templates for Claude Code projects that enforce Test-Driven Development methodology and clean architecture patterns. The templates are installed into target projects via `install.sh`.
 
-**Component Role**: [Describe the specific role this component plays]
+**Component Role**: Provides standardized project structure and documentation templates for Claude Code users.
 
-## Architecture & Project Structure
+## Repository Structure
 
-### Layered Architecture - Responsibilities and Guidelines
+### Directory Organization
 
-This project follows a **Clean Architecture** pattern with clearly defined layers. Each layer has specific responsibilities and should only communicate with adjacent layers.
-
-#### Architecture Layers
-
-[Customize this section based on your architecture. Below is an example for a typical web API:]
-
-#### 1. API Layer (`api/`) - HTTP Interface
-**Responsibility**: Handle HTTP request/response cycle, input validation, and API concerns.
-
-**What belongs here:**
-- Route handlers
-- HTTP status code decisions
-- Query parameter parsing and validation
-- Request/response serialization
-- HTTP-specific error handling
-- API versioning concerns
-
-**What does NOT belong here:**
-- Business logic or domain rules
-- Database queries or data transformations
-- Complex validation beyond HTTP concerns
-
-#### 2. Schema Layer (`schemas/`) - Data Contracts
-**Responsibility**: Define API input/output contracts and validation rules.
-
-**What belongs here:**
-- Validation models for API requests/responses
-- Input validation rules
-- Data serialization/deserialization logic
-- Documentation for API
-
-#### 3. Service Layer (`services/`) - Business Logic
-**Responsibility**: Implement domain business rules, orchestrate operations, and coordinate between repositories.
-
-**What belongs here:**
-- Business logic and domain rules
-- Workflow orchestration
-- Cross-repository operations
-- Business validation
-- Domain-specific calculations
-- Transaction boundaries
-
-#### 4. Repository Layer (`repositories/`) - Data Access
-**Responsibility**: Abstract database operations and provide clean data access interface.
-
-**What belongs here:**
-- Database queries
-- Data filtering, sorting, and pagination
-- Complex queries involving joins
-- Database transaction management
-- Data mapping between ORM and service layer
-
-#### 5. Model Layer (`models/`) - Data Structure
-**Responsibility**: Define database schema and data relationships.
-
-**What belongs here:**
-- ORM model definitions
-- Database table structure
-- Relationships between entities
-- Database-level validation
-- Enums for controlled vocabularies
-
-#### Layer Communication Rules
-
-**Allowed dependencies** (top-to-bottom only):
 ```
-API → Service → Repository → Model
-API → Schema (for validation)
-Service → Schema (for type contracts)
+agentic-dev-project-template/
+├── templates/              # Files copied to target projects
+│   ├── CLAUDE.md          # Template with placeholders
+│   ├── DEVELOPMENT.md     # Template with placeholders
+│   └── .claude/           # Claude Code configuration templates
+├── install.sh             # Installation script
+├── test/                  # Test suite
+│   ├── run-tests.sh      # Test runner
+│   └── install.bats      # Bats tests for install.sh
+├── CLAUDE.md             # Instructions for this repository
+├── DEVELOPMENT.md        # This file
+└── .claude/              # Claude Code config for template development
 ```
 
-**Forbidden dependencies**:
-- Models should NEVER import from upper layers
-- Repositories should NEVER import from Service or API layers
-- Services should NEVER import from API layer
-- Circular dependencies between any layers
+### Template Files vs Repository Files
 
-### Project Structure
-```
-project-root/
-├── src/
-│   └── [package-name]/
-│       ├── main.py              # Application entry point
-│       ├── config.py            # Configuration
-│       ├── models/              # Data models
-│       ├── schemas/             # Validation schemas
-│       ├── repositories/        # Data access
-│       ├── services/            # Business logic
-│       └── api/                 # API endpoints
-├── tests/                       # Test suite
-│   ├── conftest.py             # Test configuration
-│   └── test_*.py               # Test files
-├── [config files]
-└── README.md
-```
+**Template Files** (`templates/` directory):
+- Copied to target projects by `install.sh`
+- Contain placeholders: `[PROJECT NAME]`, `[FRAMEWORK]`, etc.
+- Customized by the project-setup agent when user runs `/setup`
 
-## Development Workflow - Test-Driven Development (TDD)
+**Repository Files** (root level):
+- Guide contributors working on the template repository
+- Not copied to target projects
+- Specific to maintaining and testing templates
 
-**CRITICAL**: This project follows strict TDD methodology. Failure to follow these rules will result in rejected code.
+## Development Workflow
 
-### MANDATORY Development Rules
+### Making Changes to Templates
 
-**RULE 1: ALWAYS WRITE TESTS BEFORE NON-TEST CODE**
-- You MUST write tests before writing ANY implementation code
-- This includes: database migrations, validation changes, route updates, package changes, text changes, exception behavior, error responses, literally EVERYTHING
-- Tests are your feedback mechanism - they tell you if your changes work
-- No exceptions to this rule
+1. **Edit files in `templates/` directory**
+   ```bash
+   vim templates/CLAUDE.md
+   vim templates/.claude/agents/user-story-implementer.md
+   ```
 
-**RULE 2: IMMEDIATE COMMITS REQUIRED**
-- You MUST create a git commit immediately after editing ANY files
-- Every file change must be committed before proceeding
-- Use descriptive commit messages following the format specified in this document
-- Never batch multiple unrelated changes into one commit
+2. **Test the installation process**
+   ```bash
+   ./test/run-tests.sh
+   ```
 
-**RULE 3: COMPREHENSIVE TEST COVERAGE**
-Tests must cover EVERYTHING, including but not limited to:
-- Database migrations and their end states
-- Schema validation changes
-- API route updates and new endpoints
-- Package dependency changes
-- User-facing text and message changes
-- Exception handling and error responses
-- Business logic changes
-- Data transformations
-- Authentication and authorization
-- Configuration changes
+3. **Manual testing** (optional but recommended)
+   ```bash
+   ./install.sh /tmp/test-project
+   cd /tmp/test-project
+   cat CLAUDE.md  # Verify placeholders exist
+   ```
 
-**RULE 4: [PROJECT-SPECIFIC DATABASE RULES]**
-[Customize based on your database:]
-- Never delete the database file
-- Use proper migration strategies
-- Always use [package manager] to modify dependencies
+4. **Commit changes**
+   ```bash
+   git add templates/
+   git commit -m "Update template files
 
-**RULE 5: CODE STANDARDS**
-- Never add comments to code explaining what it does
-- Follow existing code patterns and conventions
-- Use type hints throughout
-- Handle errors appropriately
+   - Specific changes made
+   - Why these changes improve the templates"
+   ```
 
-### TDD Process
+### Adding New Template Files
 
-1. **Write Tests First**: Always write tests before implementing any code
-2. **Test Structure**: Use mocking to isolate layers not yet implemented
-3. **Test-Fail Cycle**: Ensure tests fail correctly due to:
-   - Import errors for non-existent modules/classes
-   - `NotImplementedError` exceptions
-   - NOT syntax errors or missing imports
-4. **User Confirmation Required**: MUST stop and allow user to confirm or make changes to failing tests before proceeding to implementation
-5. **Layer Implementation**: Implement in order based on your architecture
-6. **Implementation Rules**:
-   - Implement only ONE layer at a time
-   - Fill dependencies with stubs raising `NotImplementedError`
-   - Run tests iteratively and update until passing
-   - Stop for review once tests pass
+1. **Create file in `templates/` directory**
+   ```bash
+   touch templates/.claude/commands/new-command.md
+   ```
 
-### Development Loop
-Write tests → Run tests (fail) → **STOP for user confirmation** → Write minimal code → Run tests (pass) → Commit immediately → Repeat
+2. **Use placeholders for project-specific values**
+   ```markdown
+   # Example with placeholders
+   Run tests: [test command]
+   Framework: [FRAMEWORK]
+   ```
 
-## Running the Development Server
+3. **Update project-setup agent** if it should fill placeholders
+   - Edit `templates/.claude/agents/project-setup.md`
+   - Add logic to replace new placeholders
 
-### Prerequisites
-[List prerequisites, e.g.:]
-- [Language/Runtime version]
-- [Package manager]
-- [Other tools]
+4. **Test installation**
+   ```bash
+   ./test/run-tests.sh
+   ```
 
-### Setup
-```bash
-# Install dependencies
-[install command]
+5. **Document in template README**
+   - Update templates' documentation to mention new file
 
-# Setup hooks if using pre-commit
-[hook setup command]
+### Modifying install.sh
 
-# Run database migrations
-[migration command]
-```
+1. **Edit install.sh**
+   ```bash
+   vim install.sh
+   ```
 
-### Start Development Server
-```bash
-# Start with hot reload
-[start command]
+2. **Test changes thoroughly**
+   ```bash
+   ./test/run-tests.sh
 
-# Server will be available at:
-# - [Primary URL]
-# - [Docs URL if applicable]
-```
+   # Test manually
+   ./install.sh /tmp/test-install
+   ```
 
-### Manual Testing
+3. **Update tests if behavior changed**
+   ```bash
+   vim test/install.bats
+   ```
 
-[Provide examples of how to manually test your application]
+## Running Tests
 
-## Writing and Running Tests
-
-### Test Configuration
-[Describe your test setup]
-
-### Running Tests
+### Quick Test Run
 
 ```bash
-# Run all tests
-[test command]
-
-# Run with verbose output
-[test command with verbose]
-
-# Run specific tests
-[test command for specific file/test]
-
-# Run with coverage
-[test command with coverage]
+./test/run-tests.sh
 ```
 
-### Writing Tests
-
-#### Test Structure
-```[language]
-# Example test structure for your framework
-```
-
-#### Available Fixtures
-[List available test fixtures]
-
-#### Test Categories
-[Describe test categories if you use markers/tags]
-
-### TDD Example
-
-```[language]
-# 1. Write failing test first
-def test_new_feature():
-    # Test code here
-    assert expected == actual
-
-# 2. Run test - should fail appropriately
-# [test command]
-
-# 3. Implement minimal code to make test pass
-# Implementation code here
-
-# 4. Run test again - should pass
-# 5. Refactor if needed while keeping tests green
-```
-
-## Database Management
-
-### Migrations
-```bash
-# Create new migration
-[migration create command]
-
-# Apply migrations
-[migration apply command]
-
-# Rollback migration
-[migration rollback command]
-```
-
-### Database Schema
-[Describe your primary entities and relationships]
-
-## Code Quality and Pre-Commit Hooks
-
-[If using pre-commit hooks, describe them here]
-
-### Pre-Commit Hook Setup
+### Verbose Test Output
 
 ```bash
-# Install pre-commit hooks
-[hook install command]
+./test/bats/bin/bats test/install.bats -t
 ```
 
-**What runs automatically on each commit:**
-1. [Hook 1]
-2. [Hook 2]
-3. [Tests]
+### Running Specific Tests
 
-**Manual execution**:
 ```bash
-# Run all hooks
-[hook run all command]
-
-# Skip hooks for emergency commits (use sparingly!)
-git commit --no-verify -m "Emergency fix"
+./test/bats/bin/bats test/install.bats --filter "conflict"
 ```
 
-## Key Features Implemented
+### Test Coverage
 
-[List major features and capabilities]
+The test suite covers:
+- ✅ Fresh installations to new directories
+- ✅ Directory creation
+- ✅ File copying from `templates/`
+- ✅ Conflict detection for existing files
+- ✅ Exclusion of settings.local.json
+- ✅ Relative and absolute paths
+- ✅ Error handling
 
-### API Endpoints (if applicable)
-[List primary endpoints]
+## Manual Testing Process
 
-### Data Model Features
-[Describe key data model capabilities]
+### Test Installation to New Project
 
-### Architecture Benefits
-[List architecture advantages]
+```bash
+# Create test directory
+mkdir -p /tmp/test-new-project
+
+# Run installation
+./install.sh /tmp/test-new-project
+
+# Verify files were copied
+ls -la /tmp/test-new-project
+cat /tmp/test-new-project/CLAUDE.md
+
+# Check for placeholders
+grep -r "\[PROJECT NAME\]" /tmp/test-new-project
+
+# Clean up
+rm -rf /tmp/test-new-project
+```
+
+### Test Conflict Resolution
+
+```bash
+# Create project with existing files
+mkdir -p /tmp/test-conflict
+echo "existing content" > /tmp/test-conflict/CLAUDE.md
+
+# Run installation (should detect conflict)
+./install.sh /tmp/test-conflict
+
+# Verify conflict was detected
+# Verify existing file was NOT overwritten
+cat /tmp/test-conflict/CLAUDE.md
+
+# Clean up
+rm -rf /tmp/test-conflict
+```
+
+### Test Template Customization
+
+```bash
+# Install to new project
+./install.sh /tmp/test-setup
+cd /tmp/test-setup
+
+# Start Claude Code and run /setup
+claude
+
+# In Claude Code:
+# > /setup
+# Answer questions and verify placeholders are replaced
+
+# Clean up
+cd -
+rm -rf /tmp/test-setup
+```
 
 ## Common Development Tasks
 
-### Adding a New Feature
-1. Write tests first (TDD approach)
-2. [Step 2]
-3. [Step 3]
-4. Update tests and documentation
+### Adding a New Slash Command Template
 
-### Adding a New Endpoint (if applicable)
-1. Define validation models
-2. Add repository methods if needed
-3. Add service methods for business logic
-4. Add route handler
-5. Write tests for the new endpoint
+1. Create `templates/.claude/commands/your-command.md`
+2. Use frontmatter format:
+   ```markdown
+   ---
+   description: Brief description of command
+   allowed-tools: Tool1, Tool2
+   ---
 
-### Debugging Tips
-- [Tip 1]
-- [Tip 2]
-- [Tip 3]
+   # Command Implementation
 
-## Performance Considerations
-[List performance considerations specific to your project]
+   [Command content here]
+   ```
+3. Test with install.sh
+4. Document in template README
+
+### Adding a New Agent Template
+
+1. Create `templates/.claude/agents/your-agent.md`
+2. Use frontmatter format:
+   ```markdown
+   ---
+   name: agent-name
+   description: Brief description
+   tools: Tool1, Tool2, Tool3
+   ---
+
+   # Agent Instructions
+
+   [Agent implementation here]
+   ```
+3. Test with install.sh
+4. Document in template README
+
+### Updating Documentation Templates
+
+1. Edit `templates/CLAUDE.md` or `templates/DEVELOPMENT.md`
+2. Keep placeholders for customization: `[PROJECT NAME]`, `[FRAMEWORK]`, etc.
+3. Make examples generic enough for various project types
+4. Test installation
+5. Verify project-setup agent can fill placeholders
 
 ## Commit Message Format
 
@@ -339,13 +256,157 @@ Use this format for all commits:
 ```
 Title describing the change
 
-Following: [Original user request or context]
-
 - Bullet points of specific changes made
 - Include technical details
-- Reference any specs or requirements
+- Reference any issues if applicable
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
+
+## Testing Best Practices
+
+### Before Committing
+
+1. **Run the test suite**
+   ```bash
+   ./test/run-tests.sh
+   ```
+
+2. **Manual installation test**
+   ```bash
+   ./install.sh /tmp/verify
+   cd /tmp/verify
+   # Check that everything looks correct
+   ```
+
+3. **Verify placeholders** exist in templates
+   ```bash
+   grep -r "\[PROJECT NAME\]" templates/
+   ```
+
+### After Major Changes
+
+1. Test on multiple scenarios:
+   - Fresh installation
+   - Installation with conflicts
+   - Installation to existing git repo
+   - Installation with relative paths
+
+2. Verify GitHub Actions CI passes
+
+## Architecture Patterns
+
+### Installation Flow
+
+```
+User runs: ./install.sh /path/to/project
+    ↓
+Script validates target directory
+    ↓
+Script copies templates/ to target (rsync)
+    ↓
+Script detects conflicting files
+    ↓
+If conflicts: Invoke Claude Code for help
+    ↓
+User runs /setup to customize templates
+```
+
+### Template Customization Flow
+
+```
+User runs: /setup in target project
+    ↓
+project-setup agent asks questions
+    ↓
+Agent collects: name, tech stack, architecture, etc.
+    ↓
+Agent replaces placeholders in CLAUDE.md and DEVELOPMENT.md
+    ↓
+Agent removes irrelevant files (e.g., HTTP_STATUS_CODES.md for non-APIs)
+    ↓
+User begins development with /feature
+```
+
+## Troubleshooting
+
+### Tests Failing
+
+1. **Check Bats installation**
+   ```bash
+   ./test/bats/bin/bats --version
+   ```
+
+2. **Run tests with verbose output**
+   ```bash
+   ./test/bats/bin/bats test/install.bats -t
+   ```
+
+3. **Check for syntax errors in install.sh**
+   ```bash
+   bash -n install.sh
+   ```
+
+### install.sh Not Copying Files
+
+1. **Verify templates/ directory exists**
+   ```bash
+   ls -la templates/
+   ```
+
+2. **Check TEMPLATE_DIR variable**
+   ```bash
+   # In install.sh, should be:
+   TEMPLATE_DIR="$SCRIPT_DIR/templates"
+   ```
+
+3. **Test rsync manually**
+   ```bash
+   rsync -av --ignore-existing templates/ /tmp/test-rsync/
+   ```
+
+### Placeholders Not Being Replaced
+
+1. **Check project-setup agent** (`templates/.claude/agents/project-setup.md`)
+2. **Verify placeholder format** matches what agent expects
+3. **Test /setup command** manually
+
+## CI/CD
+
+### GitHub Actions
+
+Tests run automatically on every push via `.github/workflows/test.yml`.
+
+**Workflow:**
+1. Checkout code
+2. Run `./test/run-tests.sh`
+3. Report results
+
+**Viewing Results:**
+- Check Actions tab on GitHub
+- Badge in README.md shows status
+
+## Contributing Guidelines
+
+When contributing to this repository:
+
+1. **Understand the dual structure**: Template files vs repository files
+2. **Test thoroughly**: Run test suite and manual tests
+3. **Keep templates generic**: Applicable to many project types
+4. **Document changes**: Update relevant README sections
+5. **Commit frequently**: Small, logical commits
+6. **Follow patterns**: Match existing code style and structure
+
+## Success Criteria
+
+Changes are ready to merge when:
+- ✅ All tests pass (`./test/run-tests.sh`)
+- ✅ Manual installation works correctly
+- ✅ Templates contain appropriate placeholders
+- ✅ Documentation is updated
+- ✅ Commit messages are descriptive
+- ✅ GitHub Actions CI passes
+
+Remember: These templates help developers build better software with Claude Code. Prioritize clarity, flexibility, and strict TDD enforcement.
