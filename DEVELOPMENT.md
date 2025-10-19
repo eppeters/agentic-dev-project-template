@@ -177,8 +177,16 @@ echo "existing content" > /tmp/test-conflict/CLAUDE.md
 # Run installation (should detect conflict)
 ./install.sh /tmp/test-conflict
 
+# Expected behavior:
+# 1. Script detects CLAUDE.md conflict
+# 2. Invokes Claude Code automatically
+# 3. Claude receives both file versions in the prompt
+# 4. Claude analyzes and recommends: Replace/Keep/Merge
+# 5. User approves recommendation
+# 6. Claude executes the solution
+
 # Verify conflict was detected
-# Verify existing file was NOT overwritten
+# Verify existing file was NOT overwritten (until user approves)
 cat /tmp/test-conflict/CLAUDE.md
 
 # Clean up

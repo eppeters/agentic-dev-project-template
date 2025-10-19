@@ -23,12 +23,13 @@ claude
 
 ## Features
 
-- **TDD Enforcement**: Strict test-driven development with `/tests` and `/feature` commands
+- **Double Loop TDD**: Outer loop (acceptance tests) + inner loop (unit tests) with RED-GREEN-REFACTOR
 - **Clean Architecture**: Layered architecture with clear separation of concerns
 - **Smart Commits**: `/commit` command ensures proper commit practices
+- **TDD Reminders**: `/tests` command enforces test-first development
 - **Project Setup**: `/setup` command customizes all template placeholders
 - **REST API Support**: Optional HTTP status code validation (for API projects)
-- **Conflict Resolution**: Install script detects conflicts and helps merge files
+- **Intelligent Conflict Resolution**: Automated analysis and guided merge of conflicting files
 
 ## Repository Structure
 
@@ -55,7 +56,10 @@ agentic-dev-project-template/
 ./install.sh ~/projects/my-app
 ```
 
-The script copies `templates/` to your project and handles conflicts intelligently.
+The script copies `templates/` to your project and handles conflicts intelligently:
+- Detects existing files
+- Invokes Claude Code with both file versions
+- Guides you through resolving conflicts step-by-step
 
 ### 2. Customize with /setup
 
@@ -97,21 +101,22 @@ The feature agent enforces TDD methodology:
 - **`/tests`** - Enforce test-first development
 
 ### Agents (templates/.claude/agents/)
-- **`user-story-implementer`** - Implements features layer-by-layer with TDD
+- **`user-story-implementer`** - Implements features with Double Loop TDD
 - **`project-setup`** - Customizes all template placeholders
 - **`http-status-reviewer`** *(optional)* - Validates REST API status codes
 
 ### Documentation Templates
 - **`CLAUDE.md`** - Project-specific instructions for Claude Code
-- **`DEVELOPMENT.md`** - Comprehensive development guide
+- **`DEVELOPMENT.md`** - Development guide with Double Loop TDD methodology
 - **`PERSONA.md`** - Communication style and approach
 
 ## Key Principles
 
-1. **Test-Driven Development**: Write tests FIRST, always
-2. **Immediate Commits**: Commit after every logical change
+1. **Double Loop TDD**: Outer loop (acceptance) + inner loop (unit) with RED-GREEN-REFACTOR
+2. **Refactoring**: Always refactor after tests pass to ensure quality and security
 3. **Layered Architecture**: Clear separation of concerns
 4. **User Stories**: Every feature starts with acceptance criteria
+5. **Checkpoints**: Stop for user confirmation at critical points (RED phases, final refactor)
 
 ## Documentation
 
@@ -139,7 +144,9 @@ claude
 [Implement task listing]
 ```
 
-Each feature follows TDD: tests first, implementation second, commit when passing.
+Each feature follows Double Loop TDD:
+- Outer loop: Write acceptance test → RED → Inner loop → GREEN → Refactor
+- Inner loop: Write unit test → RED → GREEN → Refactor → Commit
 
 ## Supported Project Types
 

@@ -140,7 +140,13 @@ cat CLAUDE.md  # Should have placeholders
 1. User runs: ./install.sh /path/to/project
 2. Script copies templates/ directory to target
 3. Script detects conflicts with existing files
-4. Script invokes Claude Code to help resolve conflicts
+4. If conflicts exist:
+   a. Script builds detailed conflict information (both file contents)
+   b. Script invokes Claude Code with structured prompt
+   c. Claude analyzes files (placeholder vs customized)
+   d. Claude recommends: Replace/Keep/Merge/Manual Review
+   e. User approves recommendation
+   f. Claude executes solution
 5. User runs /setup to customize placeholders
 ```
 
