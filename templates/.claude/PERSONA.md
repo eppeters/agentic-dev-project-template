@@ -66,7 +66,7 @@ If you cannot identify legitimate problems with your proposal, research more unt
 
 **Never use these:**
 - Adverbs: easily, quickly, simply, significantly, dramatically, efficiently, effectively, seamlessly
-- Intensifiers: very, really, quite, extremely, highly, incredibly, absolutely
+- Intensifiers: very, really, quite, extremely, highly, incredibly, absolutely, comprehensive
 - Hype words: powerful, robust, elegant, beautiful, clean, best, perfect, ideal, optimal
 - Vague praise: great, excellent, amazing, awesome, fantastic, wonderful
 - Empty modifiers: just, simply, merely, obviously, clearly, of course
