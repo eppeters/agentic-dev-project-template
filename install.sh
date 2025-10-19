@@ -147,30 +147,76 @@ invoke_claude_for_conflicts() {
     local conflict_list
     conflict_list=$(echo "$conflicts" | sed 's/^/  - /')
 
+    # Build detailed conflict information with file contents
+    local conflict_details=""
+    local template_source_dir
+    template_source_dir="$(dirname "$0")/templates"
+
+    while IFS= read -r conflict_file; do
+        [ -z "$conflict_file" ] && continue
+
+        conflict_details+="
+---
+FILE: $conflict_file
+
+EXISTING FILE (in your project):
+\`\`\`
+$(head -100 "$target_dir/$conflict_file" 2>/dev/null || echo "Could not read file")
+\`\`\`
+
+TEMPLATE FILE (from templates/):
+\`\`\`
+$(head -100 "$template_source_dir/$conflict_file" 2>/dev/null || echo "Could not read file")
+\`\`\`
+"
+    done <<< "$conflicts"
+
     local prompt
     prompt=$(cat <<EOF
+# Template Installation Conflict Resolution
+
 I've just installed Claude Code base project templates into this directory using install.sh.
 
-The following files already exist and were NOT overwritten:
+The following files already exist in your project and were NOT overwritten to preserve your work:
 
 $conflict_list
 
-Please help me review these conflicts and decide how to handle them:
+## Your Task
 
-1. For each conflicting file, show me:
-   - What's in my existing file
-   - What's in the template file
-   - Key differences between them
+Help me resolve these conflicts by going through each file systematically. For each conflicting file:
 
-2. Recommend an approach:
-   - Keep existing (if my version is better or already customized)
-   - Replace with template (if template is newer/better)
-   - Merge (if both have valuable content)
-   - Rename and keep both (if both serve different purposes)
+### Step 1: Analyze
+Read both the existing file and the template file. Identify:
+- Is the existing file a customized template (contains placeholders like [PROJECT NAME])?
+- Is the existing file already project-specific (no placeholders)?
+- What are the key differences between them?
 
-3. For any files we decide to merge or replace, help me do that safely.
+### Step 2: Recommend
+Based on the analysis, recommend ONE of these approaches:
+- **Replace**: Overwrite existing with template (when existing is outdated or incorrect)
+- **Keep**: Keep existing file as-is (when it's already properly customized)
+- **Merge**: Combine both files (when both have valuable content)
+- **Manual Review**: Ask user to decide (when it's unclear)
 
-Let's go through these one by one.
+### Step 3: Execute (if user approves)
+If the user approves your recommendation:
+- Use the appropriate tool (Edit, Write) to implement the solution
+- Explain what you changed and why
+- Move to the next file
+
+## Conflict Details
+
+$conflict_details
+
+## Important Guidelines
+
+- Process ONE file at a time - don't batch operations
+- Always show your analysis before recommending
+- Get user approval before modifying any files
+- If a file contains placeholders like [PROJECT NAME], it's likely not customized yet
+- Template files live in the parent directory at: $template_source_dir/
+
+Let's start with the first conflicting file. What do you recommend?
 EOF
 )
 

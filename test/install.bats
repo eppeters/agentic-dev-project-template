@@ -187,8 +187,9 @@ teardown() {
     # Check that claude was invoked with correct context
     [ -f "${CLAUDE_INVOCATION_LOG}" ]
     grep -q "MOCK_CLAUDE_INVOKED" "${CLAUDE_INVOCATION_LOG}"
-    grep -q "already exist and were NOT overwritten" "${CLAUDE_INVOCATION_LOG}"
+    grep -q "were NOT overwritten" "${CLAUDE_INVOCATION_LOG}"
     grep -q "CLAUDE.md" "${CLAUDE_INVOCATION_LOG}"
+    grep -q "Template Installation Conflict Resolution" "${CLAUDE_INVOCATION_LOG}"
 }
 
 @test "claude is NOT invoked when no conflicts exist" {
