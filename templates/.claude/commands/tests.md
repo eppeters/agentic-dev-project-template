@@ -5,7 +5,7 @@ allowed-tools: Bash, SlashCommand
 
 # Test-Driven Development Reminder
 
-**CRITICAL REMINDER**: This project follows STRICT Test-Driven Development (TDD) methodology.
+**CRITICAL REMINDER**: This project follows STRICT **Double Loop TDD** methodology.
 
 ## THE IRON LAW OF TDD
 
@@ -21,34 +21,65 @@ You MUST write tests before writing ANY implementation code. This includes:
 - ✅ Error responses
 - ✅ **LITERALLY EVERYTHING**
 
-## TDD Development Cycle
+## Double Loop TDD Development Cycle
 
-1. **Write Tests First** (ALWAYS)
-   - Create comprehensive test file covering all acceptance criteria
+### OUTER LOOP: Acceptance/E2E Test (Hours to Days)
+
+1. **Write ONE Acceptance Test** (FIRST)
+   - Write failing acceptance/E2E test for the user story
+   - Test from user's perspective (HTTP, CLI, UI)
    - Tests must fail due to ImportError or NotImplementedError
    - NOT syntax errors or missing imports
 
-2. **Run Tests** (Verify They Fail)
+2. **Run Acceptance Test** (Verify RED)
    ```bash
-   # Run the test command for this project (check @DEVELOPMENT.md)
-   pytest path/to/test_file.py -v
+   # Run the acceptance test (check @DEVELOPMENT.md)
+   pytest path/to/test_acceptance.py -v
    ```
 
 3. **STOP and Get User Confirmation**
-   - Show the failing tests
-   - Wait for user to confirm tests are correct
-   - **DO NOT proceed to implementation without confirmation**
+   - Show the failing acceptance test
+   - Wait for user to confirm test correctly validates user story
+   - **DO NOT proceed to inner loop without confirmation**
 
-4. **Implement ONE Layer at a Time**
-   - Follow the architecture pattern in @CLAUDE.md
+4. **Enter Inner Loop**
+   - Break down feature into components
+   - For each component, complete inner loop below
+   - Periodically run acceptance test to check progress
+
+5. **When Acceptance Test Passes (GREEN)**
+   - Refactor the complete implementation
+   - Run acceptance test - ensure still GREEN
+   - STOP for user review of refactored code
+   - Commit complete feature
+
+### INNER LOOP: Unit Tests (Minutes) - RED-GREEN-REFACTOR
+
+1. **RED - Write ONE Failing Unit Test**
+   - Test one small piece of functionality
+   - Use mocking to isolate component
+   - Run test - should fail
+   - STOP for user confirmation
+
+2. **GREEN - Make Test Pass**
+   - Write minimal code (3-5 lines typically)
+   - Don't worry about perfection
+   - Follow architecture pattern in @CLAUDE.md
    - Use NotImplementedError stubs for dependencies
-   - Run tests after each layer
-   - Commit immediately when tests pass
+   - Run test - should pass
 
-5. **Commit Immediately**
-   - After tests are written and verified
-   - After each layer is implemented
-   - After tests pass
+3. **REFACTOR - Improve Code**
+   - Eliminate duplication (DRY)
+   - Improve naming and clarity
+   - Check security (input validation, error handling)
+   - Follow project standards
+   - Run test - ensure still GREEN
+
+4. **Commit**
+   - After each complete RED-GREEN-REFACTOR cycle
+
+5. **Repeat**
+   - Write next unit test or exit to outer loop
 
 ## What You Should Do RIGHT NOW
 

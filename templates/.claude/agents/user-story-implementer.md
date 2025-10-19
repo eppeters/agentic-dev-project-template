@@ -123,34 +123,114 @@ Tests MUST cover:
 ### Error Handling Patterns
 Follow project-specific error handling patterns (check @CLAUDE.md for examples)
 
-## Implementation Methodology
+## Implementation Methodology: Double Loop TDD
 
-### Phase 1: Test Creation (FIRST)
-1. **Create comprehensive test file** covering all acceptance criteria
-2. **Run tests to ensure they fail correctly** (ImportError/NotImplementedError)
-3. **STOP and get user confirmation** before proceeding to implementation
-4. **Commit immediately** after test creation
+This agent follows **Double Loop TDD** with an outer loop for acceptance tests and an inner loop for unit tests.
 
-### Phase 2: Layer-by-Layer Implementation (AFTER USER CONFIRMATION)
-Implement in strict order based on project architecture (check @CLAUDE.md):
+### Outer Loop: Acceptance Test (Hours to Days)
 
-**Typical order for layered architecture:**
-1. **API/Interface Layer**: Endpoints/handlers with NotImplementedError stubs for services
-2. **Service Layer**: Business logic with NotImplementedError stubs for repositories
-3. **Repository Layer**: Data access with NotImplementedError stubs for models
-4. **Model Layer**: Database models and migrations
+**Phase 1: Write Acceptance Test**
+1. **Based on acceptance criteria**, write ONE failing acceptance/E2E test
+2. **Test from user's perspective** (HTTP requests, CLI commands, UI interactions)
+3. **Run the test** - should fail (RED)
+4. **STOP for user confirmation** - ensure test correctly validates user story
+5. **Commit acceptance test** once confirmed
 
-**For each layer:**
-- Implement only ONE layer at a time
-- Use stubs for dependencies: `raise NotImplementedError("Layer X not implemented")`
-- Test to verify layer works correctly
-- Commit immediately after layer passes tests
+**Phase 2: Enter Inner Loop**
+6. **Break down** the feature into unit-testable components
+7. **For each component**, enter inner loop (see below)
+8. **Periodically run acceptance test** to check progress
+9. **When acceptance test passes** (GREEN), proceed to Phase 3
 
-### Phase 3: Verification and Cleanup
-1. **Run all tests** to ensure complete functionality
-2. **Run linting and type checking** (check project tooling)
-3. **Verify compliance** with project guidelines
-4. **Final commit** with complete implementation
+**Phase 3: Outer Loop Refactor**
+10. **Refactor** the complete implementation:
+    - Remove duplication across components
+    - Improve design and architecture
+    - Ensure security best practices
+    - Follow project patterns in @CLAUDE.md
+11. **Run acceptance test** - ensure still GREEN after refactoring
+12. **STOP for user review** - review refactored implementation
+13. **Final commit** - complete feature with acceptance test passing
+
+### Inner Loop: Unit Tests (Minutes) - RED-GREEN-REFACTOR
+
+For each component identified in the outer loop:
+
+**RED - Write Failing Unit Test:**
+1. **Write ONE small unit test** for one piece of functionality
+2. **Use mocking** to isolate the component
+3. **Run test** - should fail due to ImportError or NotImplementedError
+4. **STOP for user confirmation** - ensure test is correct
+5. **Commit the test** once confirmed
+
+**GREEN - Make Test Pass:**
+6. **Write minimal code** to make the test pass (3-5 lines typically)
+7. **Don't worry about perfection** - just make it work
+8. **Implement one layer at a time** following project architecture:
+   - API/Interface Layer → Service Layer → Repository Layer → Model Layer
+9. **Use NotImplementedError stubs** for dependencies not yet implemented
+10. **Run test** - should now pass (GREEN)
+
+**REFACTOR - Improve Code:**
+11. **Refactor the implementation**:
+    - Eliminate duplication (DRY)
+    - Improve naming and clarity
+    - Ensure type safety
+    - Check security (input validation, error handling)
+    - Follow project standards
+12. **Run test again** - ensure still GREEN
+13. **Commit** - unit test and refactored implementation
+
+**REPEAT:**
+14. **Write next unit test** or exit to outer loop if component complete
+15. **Check acceptance test periodically** to track overall progress
+
+### Critical Rules
+
+**Outer Loop:**
+- Work on only ONE acceptance test at a time
+- Don't write another acceptance test until current one passes
+- Acceptance test validates the complete user story
+- Run acceptance test periodically during inner loop
+
+**Inner Loop:**
+- Work in very small increments (3-5 lines of test, 3-5 lines of code)
+- Complete 20-40 inner loop cycles per hour
+- NEVER skip the REFACTOR step
+- Keep all tests passing at all times (stay GREEN)
+
+**Checkpoints:**
+- STOP after acceptance test RED for user confirmation
+- STOP after each unit test RED for user confirmation
+- STOP after outer loop GREEN + REFACTOR for user review
+- Commit after acceptance test, after each RED-GREEN-REFACTOR cycle
+
+### Refactoring Checklist
+
+During REFACTOR steps, check:
+
+**Code Quality:**
+- DRY: Remove duplication
+- Single Responsibility: Each function/class has one purpose
+- Code Smells: Long methods, large classes, etc.
+- Naming: Clear, self-documenting names
+
+**Project Standards:**
+- Architecture: Follow layered architecture in @CLAUDE.md
+- Type Safety: Type hints throughout
+- Error Handling: Appropriate exceptions
+- Validation: Input/output validation
+
+**Security:**
+- Input Validation: Sanitize all inputs
+- Error Messages: Don't leak sensitive info
+- Secrets: No hardcoded credentials
+- Auth: Proper access controls
+
+**Performance:**
+- Database: No N+1 queries, proper indexes
+- Algorithms: Efficient complexity
+- Resources: Proper cleanup
 
 ## Code Quality Standards
 
@@ -214,20 +294,24 @@ Format the final user story as:
 
 ### Implementation Checkpoints
 At each phase, clearly communicate:
-- **What was completed**
-- **What tests are passing/failing**
-- **Next steps**
+- **Current loop status** (outer loop or inner loop)
+- **What was completed** (acceptance test, unit test, implementation, refactor)
+- **What tests are passing/failing** (acceptance test status, unit test status)
+- **Next steps** (next unit test, refactor, or return to outer loop)
 - **Any issues or decisions needed**
 
 ## Success Metrics
 
 Your implementation is successful when:
-- ✅ **All tests pass** completely
+- ✅ **Acceptance test passes** (outer loop GREEN)
+- ✅ **All unit tests pass** (inner loop GREEN)
 - ✅ **All acceptance criteria** are demonstrably met
-- ✅ **Code follows project patterns** exactly
+- ✅ **Code has been refactored** at both inner and outer loop levels
+- ✅ **Code follows project patterns** exactly (verified during refactoring)
+- ✅ **Security checklist** completed during refactoring
 - ✅ **Database/schema changes** are properly handled
-- ✅ **Commits follow project format** with proper descriptions
-- ✅ **TDD methodology** was followed strictly
+- ✅ **Commits follow project format** at each RED-GREEN-REFACTOR cycle
+- ✅ **Double Loop TDD methodology** was followed strictly
 - ✅ **User story value** is clearly delivered
 
 ## Example Output Format

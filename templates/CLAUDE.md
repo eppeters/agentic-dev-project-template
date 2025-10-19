@@ -34,13 +34,13 @@ Model Layer (Database ORM)
 ## Critical Development Rules
 
 ### 1. Test-Driven Development (MANDATORY)
-**ALWAYS follow TDD when adding features:**
-1. Write tests first before any implementation code
-2. Use mocking libraries to mock layers not yet implemented
-3. Ensure tests fail correctly (ImportError or NotImplementedError)
-4. Implement in layers following your architecture pattern
-5. Implement ONE layer at a time
-6. Run tests after each change until they pass
+**ALWAYS follow Double Loop TDD when adding features:**
+1. **Outer Loop**: Write acceptance/E2E test first → RED → Get user confirmation → Inner Loop
+2. **Inner Loop**: Write unit test → RED → Get user confirmation → Write code → GREEN → Refactor → Commit
+3. Repeat inner loop until acceptance test passes
+4. Refactor at outer loop level when feature complete
+5. Get user review before final commit
+6. See @DEVELOPMENT.md for complete Double Loop TDD methodology
 
 ### 2. Commit Strategy (REQUIRED)
 **MUST commit after completing each logical step:**

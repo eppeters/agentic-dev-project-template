@@ -118,9 +118,10 @@ project-root/
 - Tests are your feedback mechanism - they tell you if your changes work
 - No exceptions to this rule
 
-**RULE 2: IMMEDIATE COMMITS REQUIRED**
-- You MUST create a git commit immediately after editing ANY files
-- Every file change must be committed before proceeding
+**RULE 2: COMMITS AT KEY CHECKPOINTS**
+- You MUST create a git commit after completing each RED-GREEN-REFACTOR cycle
+- Commit after acceptance tests pass and are refactored
+- Commit after each unit test passes and is refactored
 - Use descriptive commit messages following the format specified in this document
 - Never batch multiple unrelated changes into one commit
 
@@ -149,24 +150,109 @@ Tests must cover EVERYTHING, including but not limited to:
 - Use type hints throughout
 - Handle errors appropriately
 
-### TDD Process
+### TDD Process: Double Loop Methodology
 
-1. **Write Tests First**: Always write tests before implementing any code
-2. **Test Structure**: Use mocking to isolate layers not yet implemented
-3. **Test-Fail Cycle**: Ensure tests fail correctly due to:
-   - Import errors for non-existent modules/classes
-   - `NotImplementedError` exceptions
-   - NOT syntax errors or missing imports
-4. **User Confirmation Required**: MUST stop and allow user to confirm or make changes to failing tests before proceeding to implementation
-5. **Layer Implementation**: Implement in order based on your architecture
-6. **Implementation Rules**:
-   - Implement only ONE layer at a time
-   - Fill dependencies with stubs raising `NotImplementedError`
-   - Run tests iteratively and update until passing
-   - Stop for review once tests pass
+This project follows **Double Loop TDD**, which combines acceptance testing (outer loop) with unit testing (inner loop). The outer loop operates on a timescale of hours to days, while the inner loop operates on a timescale of minutes.
 
-### Development Loop
-Write tests → Run tests (fail) → **STOP for user confirmation** → Write minimal code → Run tests (pass) → Commit immediately → Repeat
+#### Outer Loop: Acceptance/End-to-End Testing
+
+The outer loop tests the feature from the user's perspective, verifying the entire system works together.
+
+**Outer Loop Cycle:**
+1. **Write ONE failing acceptance/E2E test** for the user story
+2. **Run the test** - it should fail (RED)
+3. **STOP for user confirmation** - review the test covers acceptance criteria
+4. **Enter Inner Loop** - write unit tests and implementation
+5. **Periodically run acceptance test** - check progress toward feature completion
+6. **When acceptance test passes** (GREEN) - feature is functionally complete
+7. **Refactor** - improve design, security, and code quality
+8. **Run acceptance test again** - ensure refactoring didn't break anything (stay GREEN)
+9. **STOP for user review** - review refactored code
+10. **Commit** - acceptance test and refactored implementation
+11. **Move to next user story** - only work on ONE acceptance test at a time
+
+**Key Rules:**
+- Write only ONE acceptance test at a time
+- Don't write another acceptance test until the current one passes
+- Acceptance tests verify user stories work as expected
+- Test from the user's perspective (e.g., HTTP requests, CLI commands, UI interactions)
+
+#### Inner Loop: Unit Testing (RED-GREEN-REFACTOR)
+
+The inner loop tests individual components and classes in isolation.
+
+**Inner Loop Cycle:**
+1. **RED - Write ONE failing unit test**
+   - Test one small piece of functionality
+   - Use mocking to isolate the component
+   - Run test - should fail due to ImportError or NotImplementedError
+   - **STOP for user confirmation** - review test is correct
+
+2. **GREEN - Make the test pass**
+   - Write minimal code to make the test pass
+   - Don't worry about perfection - just make it work
+   - Implement only ONE layer at a time (following your architecture)
+   - Use `NotImplementedError` stubs for dependencies not yet implemented
+   - Run test - should now pass
+
+3. **REFACTOR - Improve the code**
+   - Now that tests pass, improve the implementation
+   - Check refactoring checklist (see below)
+   - Run tests again - ensure they still pass (stay GREEN)
+   - **Commit** - unit test and refactored implementation
+
+4. **Repeat** - Write next unit test or return to outer loop
+
+**Key Rules:**
+- Work in very small increments (typically 3-5 lines of test, 3-5 lines of code)
+- You'll complete many inner loop cycles (20-40 per hour)
+- Never skip the REFACTOR step
+- Keep all tests passing at all times
+
+#### Refactoring Checklist
+
+During the REFACTOR step, check for:
+
+**Code Quality:**
+- **DRY (Don't Repeat Yourself)**: Eliminate duplication
+- **Single Responsibility**: Each function/class does one thing
+- **Code Smells**: Long methods, large classes, primitive obsession, feature envy
+- **Naming**: Clear, self-documenting names for variables, functions, and classes
+
+**Project Standards:**
+- **Architecture Patterns**: Follow layered architecture in @CLAUDE.md
+- **Type Safety**: Use type hints/annotations throughout
+- **Error Handling**: Appropriate exceptions with clear messages
+- **Validation**: Input/output validation using project's validation library
+
+**Security:**
+- **Input Validation**: Sanitize and validate all inputs
+- **Error Messages**: Don't leak sensitive information
+- **Secrets Management**: No hardcoded credentials or API keys
+- **Authentication/Authorization**: Properly enforce access controls
+
+**Performance:**
+- **Database Queries**: N+1 query problems, missing indexes
+- **Algorithm Complexity**: Can this be more efficient?
+- **Resource Management**: Proper cleanup (close files, connections, etc.)
+
+### Development Loop Summary
+
+```
+OUTER LOOP (Hours to Days):
+  Write E2E test → RED → STOP (user review) → Inner Loop → Periodic E2E checks →
+  GREEN → Refactor → GREEN → STOP (user review) → Commit → Next feature
+
+INNER LOOP (Minutes):
+  Write unit test → RED → STOP (user review) → Write code → GREEN →
+  Refactor → GREEN → Commit → Repeat or exit to outer loop
+```
+
+**Critical Checkpoints:**
+- STOP after every RED (failing test) for user confirmation
+- STOP after outer loop GREEN + REFACTOR for user review
+- Commit after every complete RED-GREEN-REFACTOR cycle
+- Run acceptance test periodically to track progress
 
 ## Running the Development Server
 
