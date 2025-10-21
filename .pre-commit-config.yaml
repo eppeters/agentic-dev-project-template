@@ -1,0 +1,15 @@
+repos:
+  - repo: https://github.com/trufflesecurity/trufflehog
+    rev: v3.90.11
+    hooks:
+      - id: trufflehog
+        name: Scan for secrets with TruffleHog
+        entry: trufflehog
+        args:
+          - git
+          - file://
+          - --since-commit
+          - HEAD
+          - --fail
+          - --no-update
+        language: system
